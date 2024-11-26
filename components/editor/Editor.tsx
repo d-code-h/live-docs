@@ -16,8 +16,7 @@ import {
   liveblocksConfig,
   LiveblocksPlugin,
 } from '@liveblocks/react-lexical';
-import { useSyncStatus, useThreads } from '@liveblocks/react/suspense';
-import Loader from '../Loader';
+import { useThreads } from '@liveblocks/react/suspense';
 import DeleteModal from '../DeleteModal';
 import FloatingToolbarPlugin from './plugins/FloatingToolbarPlugin';
 import Comments from '../Comments';
@@ -33,14 +32,13 @@ export function Editor({
   roomId: string;
   currentUserType: UserType;
 }) {
-  const status = useSyncStatus();
   const { threads } = useThreads();
 
   const initialConfig = liveblocksConfig({
     namespace: 'Editor',
     nodes: [HeadingNode],
     onError: (error: Error) => {
-      console.error(error);
+      console.error(`Editor error: ${error}`);
       throw error;
     },
     theme: Theme,
@@ -56,22 +54,23 @@ export function Editor({
         </div>
 
         <div className="editor-wrapper flex flex-col items-center justify-start">
-          {status === 'synchronizing' ? (
+          {/* {status === 'synchronizing' ? (
             <Loader />
-          ) : (
-            <div className="editor-inner min-h-[1100px] relative mb-5 h-fit w-full max-w-[800px] shadow-md lg:mb-10">
-              <RichTextPlugin
-                contentEditable={
-                  <ContentEditable className="editor-input h-full" />
-                }
-                placeholder={<Placeholder />}
-                ErrorBoundary={LexicalErrorBoundary}
-              />
-              {currentUserType === 'editor' && <FloatingToolbarPlugin />}
-              <HistoryPlugin />
-              <AutoFocusPlugin />
-            </div>
-          )}
+          ) : ( */}
+
+          <div className="editor-inner min-h-[1100px] relative mb-5 h-fit w-full max-w-[800px] shadow-md lg:mb-10">
+            <RichTextPlugin
+              contentEditable={
+                <ContentEditable className="editor-input h-full" />
+              }
+              placeholder={<Placeholder />}
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+            {currentUserType === 'editor' && <FloatingToolbarPlugin />}
+            <HistoryPlugin />
+            <AutoFocusPlugin />
+          </div>
+          {/* )} */}
 
           <LiveblocksPlugin>
             <FloatingComposer className="w-[350px]" />

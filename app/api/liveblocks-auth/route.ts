@@ -1,45 +1,35 @@
 import { liveblocks } from '@/lib/liveblocks';
 import { getUserColor } from '@/lib/utils';
 import { currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
 
 export async function POST() {
-  // Get the current user from your database
-  const clerkUser = await currentUser();
+  try {
+    // Get the current user from Clerk
+    const clerkUser = await currentUser();
 
-  if (!clerkUser) redirect('/sign-in');
+    if (!clerkUser) {
+      return new Response('User not authenticated', { status: 401 });
+    }
 
-  const { id, firstName, lastName, emailAddresses, imageUrl } = clerkUser;
+    const { id, firstName, lastName, emailAddresses, imageUrl } = clerkUser;
 
-  const user = {
-    id,
-    info: {
+    const user = {
       id,
       name: `${firstName} ${lastName}`,
       email: emailAddresses[0].emailAddress,
       avatar: imageUrl,
       color: getUserColor(id),
-    },
-  };
+    };
 
-  // Identify the user and return the result
-  const { body, status } = await liveblocks.identifyUser(
-    {
-      userId: user.info.email,
-      groupIds: [],
-    },
-    { userInfo: user.info }
-  );
+    // Identify the user with Liveblocks
+    const { body, status } = await liveblocks.identifyUser(
+      { userId: user.email, groupIds: [] },
+      { userInfo: user }
+    );
 
-  // user.id,
-  // { userInfo: user.metadata } // Optional
-
-  // Set permissions for this session
-  // session.allow(`room:${id}:*`, session.READ_ACCESS); // Read access to all rooms owned by the user
-  // session.allow(`room:${id}:my-room`, session.FULL_ACCESS); // Full access to a specific room
-  // session.allow(`room:${roomId}`, session.FULL_ACCESS);
-
-  // Authorize the user and return the result
-  // const { status, body } = await session.authorize();
-  return new Response(body, { status });
+    return new Response(body, { status });
+  } catch (error) {
+    console.error('Error in Liveblocks auth route:', error);
+    return new Response('Internal Server Error', { status: 500 });
+  }
 }

@@ -5,7 +5,6 @@ const ActiveCollaborators = () => {
   const others = useOthers();
 
   const collaborators = others.map((other) => other.info);
-  console.log('collaborators', others.length);
 
   return (
     <ul className="collaborators-list">

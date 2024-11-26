@@ -36,6 +36,7 @@ export const createDocument = async ({
 };
 
 export const updateDocument = async (roomId: string, title: string) => {
+  console.log('New updates', { roomId, title });
   try {
     const updateRoom = await liveblocks.updateRoom(roomId, {
       metadata: {
