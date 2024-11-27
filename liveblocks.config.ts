@@ -1,4 +1,7 @@
 // Define Liveblocks types for your application
+
+import { LiveObject } from '@liveblocks/client';
+
 // https://liveblocks.io/docs/api-reference/liveblocks-react#Typing-your-data
 declare global {
   interface Liveblocks {
@@ -10,6 +13,9 @@ declare global {
 
     // The Storage tree for the room, for useMutation, useStorage, etc.
     Storage: {
+      room: LiveObject<{
+        title: string;
+      }>;
       // Example, a conflict-free list
       // animals: LiveList<string>;
     };
