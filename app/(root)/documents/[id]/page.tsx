@@ -7,20 +7,25 @@ import { redirect } from 'next/navigation';
 export default async function Document({ params }: SearchParamProps) {
   const { id } = await params;
 
+  // Get the current authenticated user
   const clerkUser = await currentUser();
-  if (!clerkUser) redirect('/sign-in');
+  if (!clerkUser) redirect('/sign-in'); // Redirect if no user is authenticated
 
+  // Fetch the room data
   const room = await getDocument({
     roomId: id,
     userId: clerkUser.emailAddresses[0].emailAddress,
   });
 
-  if (!room) redirect('/');
+  if (!room) redirect('/'); // Redirect if room is not found
 
+  // Get the list of users with access to the room
   const userIds = Object.keys(room.usersAccesses);
 
+  // Fetch the users' details from Clerk
   const users = await getClerkUsers({ userIds });
 
+  // Map user data to include user type (editor or viewer)
   const usersData = users.map((user: User) => ({
     ...user,
     userType: room.usersAccesses[user.email]?.includes('room:write')
@@ -28,6 +33,7 @@ export default async function Document({ params }: SearchParamProps) {
       : 'viewer',
   }));
 
+  // Determine the current user's role in the room (editor or viewer)
   const currentUserType = room.usersAccesses[
     clerkUser.emailAddresses[0].emailAddress
   ]?.includes('room:write')

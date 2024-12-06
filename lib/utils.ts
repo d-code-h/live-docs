@@ -1,26 +1,30 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+// Combines class names using clsx and resolves conflicts using tailwind-merge
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Deep copies the given value by serializing and deserializing it
 export const parseStringify = (value: unknown) =>
   JSON.parse(JSON.stringify(value));
 
+// Returns the access permissions based on the user type
 export const getAccessType = (userType: UserType) => {
   switch (userType) {
     case 'creator':
-      return ['room:write'];
+      return ['room:write']; // Creator can write to the room
     case 'editor':
-      return ['room:write'];
+      return ['room:write']; // Editor can write to the room
     case 'viewer':
-      return ['room:read', 'room:presence:write'];
+      return ['room:read', 'room:presence:write']; // Viewer can read and write presence
     default:
-      return ['room:read', 'room:presence:write'];
+      return ['room:read', 'room:presence:write']; // Default access for any unrecognized user type
   }
 };
 
+// Converts a timestamp to a human-readable relative time (e.g., '2 days ago')
 export const dateConverter = (timestamp: string): string => {
   const timestampNum = Math.round(new Date(timestamp).getTime() / 1000);
   const date: Date = new Date(timestampNum * 1000);
@@ -32,6 +36,7 @@ export const dateConverter = (timestamp: string): string => {
   const diffInHours: number = diffInMinutes / 60;
   const diffInDays: number = diffInHours / 24;
 
+  // Checks the difference in days, hours, minutes, and returns a human-readable string
   switch (true) {
     case diffInDays > 7:
       return `${Math.floor(diffInDays / 7)} weeks ago`;
@@ -46,7 +51,7 @@ export const dateConverter = (timestamp: string): string => {
   }
 };
 
-// Function to generate a random color in hex format, excluding specified colors
+// Generates a random color in hex format, avoiding specified colors
 export function getRandomColor() {
   const avoidColors = ['#000000', '#FFFFFF', '#8B4513']; // Black, White, Brown in hex format
 
@@ -59,39 +64,43 @@ export function getRandomColor() {
 
     // Convert RGB to hex format
     randomColor = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
-  } while (avoidColors.includes(randomColor));
+  } while (avoidColors.includes(randomColor)); // Keep generating until the color is not in the avoid list
 
   return randomColor;
 }
 
+// Array of bright colors used for random selection
 export const brightColors = [
-  '#2E8B57', // Darker Neon Green
-  '#FF6EB4', // Darker Neon Pink
-  '#00CDCD', // Darker Cyan
-  '#FF00FF', // Darker Neon Magenta
-  '#FF007F', // Darker Bright Pink
-  '#FFD700', // Darker Neon Yellow
-  '#00CED1', // Darker Neon Mint Green
-  '#FF1493', // Darker Neon Red
-  '#00CED1', // Darker Bright Aqua
-  '#FF7F50', // Darker Neon Coral
-  '#9ACD32', // Darker Neon Lime
-  '#FFA500', // Darker Neon Orange
-  '#32CD32', // Darker Neon Chartreuse
-  '#ADFF2F', // Darker Neon Yellow Green
-  '#DB7093', // Darker Neon Fuchsia
-  '#00FF7F', // Darker Spring Green
-  '#FFD700', // Darker Electric Lime
-  '#FF007F', // Darker Bright Magenta
-  '#FF6347', // Darker Neon Vermilion
+  '#2E8B57',
+  '#FF6EB4',
+  '#00CDCD',
+  '#FF00FF',
+  '#FF007F',
+  '#FFD700',
+  '#00CED1',
+  '#FF1493',
+  '#00CED1',
+  '#FF7F50',
+  '#9ACD32',
+  '#FFA500',
+  '#32CD32',
+  '#ADFF2F',
+  '#DB7093',
+  '#00FF7F',
+  '#FFD700',
+  '#FF007F',
+  '#FF6347',
 ];
 
+// Generates a color based on the user ID, ensuring consistency for each user
 export function getUserColor(userId: string) {
   let sum = 0;
+  // Calculate the sum of character codes of the userId to determine a unique color index
   for (let i = 0; i < userId.length; i++) {
     sum += userId.charCodeAt(i);
   }
 
+  // Use the sum to select a color from the brightColors array
   const colorIndex = sum % brightColors.length;
   return brightColors[colorIndex];
 }

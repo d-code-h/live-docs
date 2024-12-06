@@ -11,12 +11,17 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 export default async function Home() {
+  // Retrieve the current user
   const clerkUser = await currentUser();
+
+  // Redirect if the user is not signed in
   if (!clerkUser) redirect('/sign-in');
 
+  // Fetch documents associated with the user's email
   const roomDocuments = await getDocuments(
     clerkUser.emailAddresses[0].emailAddress
   );
+
   return (
     <main className="home-container">
       <Header className="sticky left-0 top-0">
@@ -58,7 +63,7 @@ export default async function Home() {
                     <div className="space-y-1">
                       <p className="line-clamp-1 text-lg">{title}</p>
                       <p className="text-sm font-light text-blue-100">
-                        Create about {dateConverter(createdAt)}
+                        Created {dateConverter(createdAt)}
                       </p>
                     </div>
                   </Link>
