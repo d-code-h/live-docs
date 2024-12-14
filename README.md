@@ -94,6 +94,6 @@ SENTRY_AUTH_TOKEN=
 
 We welcome contributions! Please fork the repository and submit a pull request with your changes. Ensure that your code follows the established coding conventions and passes the linting checks.
 
-## License 📄
+## License ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-This project is licensed under the MIT License
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
